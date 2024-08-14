@@ -67,4 +67,9 @@ public class Task {
     }
 
 
+    public String getCsvFormat(){
+        return  taskName + "," + category.getName() + "," + startTime + ","
+        + endTime + "," + status;
+    }
+
 }

@@ -11,14 +11,18 @@ public class CurrentTask {
     private Map<String, Task> currentTasks = new HashMap<>();
 
 
+    public CurrentTask(Map<String, Task> currentTasks) {
+        this.currentTasks = currentTasks;
+    }
+
     public void startTask(Task task){
         if (currentTasks.putIfAbsent(task.getTaskName(), task) != null){
             Logger.log("Task already exists, skipping");
         }
     }
 
-    public void completeTask(Task task){
-        Task existingTask = currentTasks.get(task.getTaskName());
+    public void completeTask(String taskName){
+        Task existingTask = currentTasks.get(taskName);
 
         if (existingTask == null){
             Logger.log("No tasks found");
@@ -35,6 +39,11 @@ public class CurrentTask {
 
     public void setCurrentTasks(Map<String, Task> currentTasks) {
         this.currentTasks = currentTasks;
+    }
+
+    @Override
+    public String toString() {
+        return "CurrentTask [currentTasks=" + currentTasks + "]";
     }
 
     

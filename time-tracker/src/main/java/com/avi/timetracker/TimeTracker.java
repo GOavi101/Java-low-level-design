@@ -1,38 +1,43 @@
 package com.avi.timetracker;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import com.avi.timetracker.data.Category;
 import com.avi.timetracker.data.CurrentTask;
 import com.avi.timetracker.data.Task;
+import com.avi.timetracker.util.ArgUtil;
+import com.avi.timetracker.util.Args;
+import com.avi.timetracker.util.FileUtil;
 
 public class TimeTracker {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws URISyntaxException, IOException {
 
         //Arrays.stream(args).forEach(System.out::println);
 
-        if (args.length < 2){
-            Logger.log("Error! Not enough arguments!");
-        }
-        String command=args[0];
+        ArgUtil argUtil=new ArgUtil();
+        Args arguments=argUtil.parseArgs(args);
 
-        // Get currentTasks from file
-        CurrentTask currentTask = new CurrentTask();
 
-        switch (command) {
-            case "start":
-                String taskName = args[1];
-                String categoryName = args.length == 3 ? args[2] : Category.NONE;
+        //Get current task from file
+        FileUtil fileUtil=new FileUtil();
+        CurrentTask currentTask=fileUtil.getSavedTasks();
+
+
+        switch(arguments.getCommand().name()){
+            case "TASK_START" -> {
                 
-                Task task= new Task(taskName, new Category(categoryName));
+                Task task=new Task(arguments.getTaskName(),new Category(arguments.getCategoryName()));
                 currentTask.startTask(task);
-                break;
-        
-            case "stop":
-                break; 
-            default:
-                break;
-        }
+            }
+            
+            case "TASK_STOP" -> currentTask.completeTask(arguments.getTaskName());      
 
+        };
+
+
+        fileUtil.saveTasksToFile(currentTask);
 
 
     }
